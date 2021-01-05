@@ -12,7 +12,6 @@
   the compiler tests in bootstrap mode."}
   self-parity.auxiliary
   (:require
-    goog.Delay
     goog.Disposable
     goog.Promise
     goog.Throttle
