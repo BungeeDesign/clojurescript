@@ -117,9 +117,10 @@ case."
          (map string/trim)
          (drop-while #(not (or (string/includes? % "goog.provide(")
                                (string/includes? % "goog.module(")
-                               (string/includes? % "goog.require("))))
+                               (string/includes? % "goog.require(")
+                               (string/includes? % "goog.requireType("))))
          (take-while #(not (re-matches #".*=[\s]*function\(.*\)[\s]*[{].*" %)))
-         (map #(re-matches #".*goog\.(provide|module|require)\(['\"](.*)['\"]\)" %))
+         (map #(re-matches #".*goog\.(provide|module|require|requireType)\(['\"](.*)['\"]\)" %))
          (remove nil?)
          (map #(drop 1 %))
          (reduce (fn [m ns]
@@ -129,7 +130,7 @@ case."
                        "module"  (-> m
                                    (conj-in :provides munged-ns)
                                    (assoc :module :goog))
-                       "require" (conj-in m :requires munged-ns))))
+                       ("require" "requireType") (conj-in m :requires munged-ns))))
                  {:requires [] :provides []}))))
 
 (defprotocol IJavaScript
@@ -337,11 +338,15 @@ JavaScript library containing provide/require 'declarations'."
            (map
              (fn [[file provides requires load-opts-str]]
                (let [{:strs [lang module]}
-                     (-> (string/replace load-opts-str "'" "\"") (json/read-str))]
+                     (-> (string/replace load-opts-str "'" "\"") (json/read-str))
+                     file' (str "goog/" file)]
                  (merge
-                   {:file     (str "goog/" file)
+                   {:file     file'
                     :provides (parse-list provides)
-                    :requires (parse-list requires)
+                    ;; we have to get the requires from the file itself because
+                    ;; of requireType statements - these don't appear in deps.js
+                    :requires (-> file' io/resource io/reader line-seq
+                                parse-js-ns :requires)
                     :group    :goog}
                    (when module
                      {:module (keyword module)})
