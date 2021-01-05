@@ -982,6 +982,9 @@
 (core/defmacro string? [x]
   (bool-expr (core/list 'js* "typeof ~{} === 'string'" x)))
 
+(core/defmacro js-fn? [x]
+  (bool-expr (core/list 'js* "typeof ~{} === 'function'" x)))
+
 (core/defmacro exists?
   "Return true if argument exists, analogous to usage of typeof operator
    in JavaScript."
