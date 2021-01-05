@@ -42,7 +42,7 @@
                             #?@(:cljs [alias coercive-not coercive-not= coercive-= coercive-boolean
                                        truth_ js-arguments js-delete js-in js-debugger exists? divide js-mod
                                        unsafe-bit-and bit-shift-right-zero-fill mask bitpos caching-hash
-                                       defcurried rfn specify! js-this this-as implements? array js-obj
+                                       defcurried rfn specify! js-this this-as implements? array js-obj js-fn?
                                        simple-benchmark gen-apply-to js-str es6-iterable load-file* undefined?
                                        specify copy-arguments goog-define js-comment js-inline-comment
                                        unsafe-cast require-macros use-macros gen-apply-to-simple unchecked-get unchecked-set])])

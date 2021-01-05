@@ -92,7 +92,6 @@
     goog.locale
     goog.locale.TimeZoneFingerprint
     goog.locale.defaultLocaleNameConstants
-    goog.locale.genericFontNames
     goog.locale.timeZoneDetection
     goog.math
     goog.math.AffineTransform
