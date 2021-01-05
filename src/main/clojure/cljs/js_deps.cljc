@@ -126,11 +126,12 @@ case."
          (reduce (fn [m ns]
                    (let [munged-ns (string/replace (last ns) "_" "-")]
                      (case (first ns)
-                       "provide" (conj-in m :provides munged-ns)
-                       "module"  (-> m
-                                   (conj-in :provides munged-ns)
-                                   (assoc :module :goog))
-                       ("require" "requireType") (conj-in m :requires munged-ns))))
+                       "provide"     (conj-in m :provides munged-ns)
+                       "module"      (-> m
+                                       (conj-in :provides munged-ns)
+                                       (assoc :module :goog))
+                       "require"     (conj-in m :requires munged-ns)
+                       "requireType" (conj-in m :require-types munged-ns))))
                  {:requires [] :provides []}))))
 
 (defprotocol IJavaScript
@@ -341,13 +342,12 @@ JavaScript library containing provide/require 'declarations'."
                      (-> (string/replace load-opts-str "'" "\"") (json/read-str))
                      file' (str "goog/" file)]
                  (merge
-                   {:file     file'
-                    :provides (parse-list provides)
-                    ;; we have to get the requires from the file itself because
-                    ;; of requireType statements - these don't appear in deps.js
-                    :requires (-> file' io/resource io/reader line-seq
-                                parse-js-ns :requires)
-                    :group    :goog}
+                   {:file          file'
+                    :provides      (parse-list provides)
+                    :requires      (parse-list requires)
+                    :require-types (-> file' io/resource io/reader line-seq
+                                     parse-js-ns :require-types)
+                    :group         :goog}
                    (when module
                      {:module (keyword module)})
                    (when lang
