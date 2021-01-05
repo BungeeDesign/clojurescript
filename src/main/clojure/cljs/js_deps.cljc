@@ -132,7 +132,7 @@ case."
                                        (assoc :module :goog))
                        "require"     (conj-in m :requires munged-ns)
                        "requireType" (conj-in m :require-types munged-ns))))
-                 {:requires [] :provides []}))))
+                 {:requires [] :provides [] :require-types []}))))
 
 (defprotocol IJavaScript
   (-foreign? [this] "Whether the Javascript represents a foreign
